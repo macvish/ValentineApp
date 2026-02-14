@@ -383,11 +383,11 @@ const closeMemory = () => {
           </div>
 
           <div className="mt-4 grid gap-4 md:grid-cols-3">
-            <MemoryCard title="Memory #1" unlocked={unlockLevel >= 1} img="/memories/memory-1.png" hint="Unlock at 5 No attempts" onOpen={openMemory} />
+            <MemoryCard title="Memory #1" unlocked={unlockLevel >= 1} img="/memories/memory-1.jpeg" hint="Unlock at 5 No attempts" onOpen={openMemory} />
 
-            <MemoryCard title="Memory #2" unlocked={unlockLevel >= 2} img="/memories/memory-2.png" hint="Unlock at 8 No attempts" onOpen={openMemory} />
+            <MemoryCard title="Memory #2" unlocked={unlockLevel >= 2} img="/memories/memory-2.jpeg" hint="Unlock at 8 No attempts" onOpen={openMemory} />
 
-            <MemoryCard title="Memory #3" unlocked={unlockLevel >= 3} img="/memories/memory-3.png" hint="Unlock at 12 No attempts" onOpen={openMemory} />
+            <MemoryCard title="Memory #3" unlocked={unlockLevel >= 3} img="/memories/memory-3.jpeg" hint="Unlock at 12 No attempts" onOpen={openMemory} />
           </div>
         </div>
 
