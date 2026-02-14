@@ -70,6 +70,19 @@ export default function Page() {
 
   const [eggUnlocked, setEggUnlocked] = useState(false);
 
+  const [memoryOpen, setMemoryOpen] = useState(false);
+  const [activeMemory, setActiveMemory] = useState<{ title: string; img: string } | null>(null);
+
+const openMemory = (m: { title: string; img: string }) => {
+  setActiveMemory(m);
+  setMemoryOpen(true);
+};
+
+const closeMemory = () => {
+  setMemoryOpen(false);
+  setActiveMemory(null);
+};
+
   const taunts = useMemo(
     () => [
       "Go on… click No 😈",
@@ -159,7 +172,10 @@ export default function Page() {
           confetti({ particleCount: 220, spread: 110, origin: { y: 0.7 } });
         } catch {}
       }
-      if (e.key === "Escape") setConfirmOpen(false);
+      if (e.key === "Escape") {
+        setConfirmOpen(false)
+        closeMemory()
+      }
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
@@ -367,9 +383,11 @@ export default function Page() {
           </div>
 
           <div className="mt-4 grid gap-4 md:grid-cols-3">
-            <MemoryCard title="Memory #1" unlocked={unlockLevel >= 1} img="/memories/memory-1.jpeg" hint="Unlock at 5 No attempts" />
-            <MemoryCard title="Memory #2" unlocked={unlockLevel >= 2} img="/memories/memory-2.jpeg" hint="Unlock at 8 No attempts" />
-            <MemoryCard title="Memory #3" unlocked={unlockLevel >= 3} img="/memories/memory-3.jpeg" hint="Unlock at 12 No attempts" />
+            <MemoryCard title="Memory #1" unlocked={unlockLevel >= 1} img="/memories/memory-1.png" hint="Unlock at 5 No attempts" onOpen={openMemory} />
+
+            <MemoryCard title="Memory #2" unlocked={unlockLevel >= 2} img="/memories/memory-2.png" hint="Unlock at 8 No attempts" onOpen={openMemory} />
+
+            <MemoryCard title="Memory #3" unlocked={unlockLevel >= 3} img="/memories/memory-3.png" hint="Unlock at 12 No attempts" onOpen={openMemory} />
           </div>
         </div>
 
@@ -411,6 +429,43 @@ export default function Page() {
           </div>
         </div>
       )}
+
+      {memoryOpen && activeMemory && (
+        <div
+          className="fixed inset-0 z-[60] bg-black/60 p-4 grid place-items-center"
+          onClick={closeMemory}
+          role="dialog"
+          aria-modal="true"
+        >
+          <div
+            className="w-full max-w-4xl rounded-3xl bg-white overflow-hidden shadow-2xl border border-rose-100"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center justify-between px-5 py-4 border-b border-rose-100">
+              <div className="font-extrabold text-rose-700">{activeMemory.title}</div>
+              <button
+                onClick={closeMemory}
+                className="rounded-xl px-3 py-1 text-sm font-semibold text-rose-700 hover:bg-rose-50 border border-rose-100"
+              >
+                Close ✕
+              </button>
+            </div>
+
+            <div className="bg-black">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={activeMemory.img}
+                alt={activeMemory.title}
+                className="w-full max-h-[80vh] object-contain"
+              />
+            </div>
+
+            <div className="px-5 py-4 text-sm text-rose-900/70 bg-white">
+              Tap outside the image (or Close) to go back 💞
+            </div>
+          </div>
+        </div>
+      )}
     </main>
   );
 }
@@ -424,13 +479,36 @@ function Stat({ pill, value }: { pill: string; value: string }) {
   );
 }
 
-function MemoryCard({ title, unlocked, img, hint }: { title: string; unlocked: boolean; img: string; hint: string }) {
+function MemoryCard({
+  title,
+  unlocked,
+  img,
+  hint,
+  onOpen,
+}: {
+  title: string;
+  unlocked: boolean;
+  img: string;
+  hint: string;
+  onOpen: (m: { title: string; img: string }) => void;
+}) {
   return (
-    <div className="rounded-2xl border border-rose-100 bg-white/70 overflow-hidden shadow-sm">
+    <button
+      type="button"
+      onClick={() => unlocked && onOpen({ title, img })}
+      className={[
+        "text-left rounded-2xl border border-rose-100 bg-white/70 overflow-hidden shadow-sm",
+        "transition hover:shadow-md focus:outline-none focus:ring-2 focus:ring-rose-300",
+        unlocked ? "cursor-pointer" : "opacity-80 cursor-not-allowed",
+      ].join(" ")}
+      aria-disabled={!unlocked}
+      disabled={!unlocked}
+    >
       <div className="px-4 py-3 flex items-center justify-between">
         <div className="font-bold text-rose-700">{title}</div>
-        <div className="text-xs text-rose-900/55">{unlocked ? "Unlocked ✅" : hint}</div>
+        <div className="text-xs text-rose-900/55">{unlocked ? "Tap to view 👆" : hint}</div>
       </div>
+
       <div className="relative aspect-video bg-rose-50">
         {unlocked ? (
           // eslint-disable-next-line @next/next/no-img-element
@@ -439,7 +517,11 @@ function MemoryCard({ title, unlocked, img, hint }: { title: string; unlocked: b
           <div className="h-full w-full grid place-items-center text-rose-900/50 text-sm">🔒 Locked</div>
         )}
       </div>
-    </div>
+
+      <div className="px-4 py-3 text-xs text-rose-900/55">
+        Replace images in <code className="font-mono">public/memories</code> with your real photos.
+      </div>
+    </button>
   );
 }
 
