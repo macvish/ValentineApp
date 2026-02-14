@@ -1,8 +1,8 @@
 import "./globals.css";
 
 export const metadata = {
-  title: "Be My Valentine 💘",
-  description: "A fun valentine proposal website",
+  title: "Erica, be my Valentine 💘",
+  description: "A fun valentine proposal website for Erica",
 };
 
 export default function RootLayout({

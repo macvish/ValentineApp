@@ -11,13 +11,4 @@ a, button, [role="button"], input[type="button"], input[type="submit"] {
   cursor: url("/cursors/heart-pointer.png") 6 6, pointer;
 }
 
-@keyframes float {
-  0% { transform: translateY(0) scale(0.9); opacity: 0; }
-  10% { opacity: 0.45; }
-  100% { transform: translateY(-120vh) scale(1.25); opacity: 0; }
-}
-.animate-float {
-  animation-name: float;
-  animation-timing-function: linear;
-  animation-iteration-count: infinite;
-}
+:root { color-scheme: light; }
